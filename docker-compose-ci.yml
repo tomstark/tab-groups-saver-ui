@@ -1,0 +1,10 @@
+services:
+  node-service:
+    image: buildx_cached_build:ci
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - node_modules:/var/www/html/node_modules
+
+volumes:
+  node_modules:
