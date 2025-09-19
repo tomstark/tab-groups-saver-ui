@@ -76,7 +76,7 @@ Because this volume is isolated from the host, your host `node_modules` director
 docker compose cp node-service:/var/www/html/node_modules .
 ```
 
-## Tooling
+## 🛠️ Tooling
 
 Run the following commands inside the node-service container, or outside (from host), prefixed with `docker compose exec node-service`:
 - `npm run test`
