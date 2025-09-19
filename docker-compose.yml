@@ -1,0 +1,20 @@
+services:
+  node-service:
+    build:
+      context: .
+      dockerfile: ./docker/node/Dockerfile
+    working_dir: /var/www/html
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/var/www/html
+      - node_modules:/var/www/html/node_modules
+    environment:
+      HOT_RELOAD_EXTENSION_VITE_PORT: 8080
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    post_start:
+      - command: npm run dev-sidecar
+
+volumes:
+  node_modules:
