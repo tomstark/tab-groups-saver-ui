@@ -5,7 +5,8 @@
   "description": "Base Level Extension",
   "permissions": [
     "tabs",
-    "tabGroups"
+    "tabGroups",
+    "storage"
   ],
   "chrome_url_overrides": {
     "newtab": "src/pages/new-tab/index.html"

@@ -98,3 +98,8 @@ When you've finished development, the extension can be built with:
 - `docker compose exec node-service npm run build`
 
 Then zipped and uploaded, as per the [Publish in the Chrome Web Store](https://developer.chrome.com/docs/webstore/publish) docs.
+
+## 👨🏻‍🔧 TroubleShooting
+
+- WebSocket fails - receiving a "WebSocket connection to 'wss://localhost:5173/?Token=...' failed:" message in the console
+  - Visit https://localhost:5173 and click 'Show advanced' > click 'Proceed to localhost (unsafe)'

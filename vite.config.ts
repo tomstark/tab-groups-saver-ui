@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import vue from '@vitejs/plugin-vue';
-import vueDevTools from 'vite-plugin-vue-devtools';
+// import vueDevTools from 'vite-plugin-vue-devtools';
+import svgLoader from 'vite-svg-loader';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import hotReloadExtension from 'hot-reload-extension-vite';
 import { fileURLToPath, URL } from 'node:url';
@@ -11,23 +12,24 @@ import fs from 'fs';
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    svgLoader(),
+    // vueDevTools(),
     hotReloadExtension({
       log: true,
-      backgroundPath: 'src/pages/background/index.js'
+      backgroundPath: 'src/pages/background/index.js',
     }),
     viteStaticCopy({
       targets: [
         {
           src: 'manifest.json',
-          dest: '.'
-        }
-      ]
-    })
+          dest: '.',
+        },
+      ],
+    }),
   ],
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   server: {
@@ -40,8 +42,8 @@ export default defineConfig({
       cert: fs.readFileSync(`docker/certs/tgs-ui-test-cert.pem`),
     },
     hmr: {
-      host: 'localhost'
-    }
+      host: 'localhost',
+    },
   },
   build: {
     rollupOptions: {
@@ -56,8 +58,8 @@ export default defineConfig({
       output: {
         dir: 'dist',
         entryFileNames: 'src/pages/[name]/index.js',
-        chunkFileNames: 'assets/js/[name].js'
-      }
-    }
+        chunkFileNames: 'assets/js/[name].js',
+      },
+    },
   },
 });

@@ -1,0 +1,87 @@
+@use '../variables/grid' as g;
+@use 'sass:map';
+
+@mixin _gridMediaMaxWidth($max_width) {
+  @media screen and (max-width: $max_width) {
+    @content;
+  }
+}
+
+@mixin _gridMediaMinWidth($min_width) {
+  @media screen and (min-width: $min_width) {
+    @content;
+  }
+}
+
+@mixin _gridMediaBetweenWidth($max_width, $min_width) {
+  @media screen and (min-width: $min_width) and (max-width: $max_width) {
+    @content;
+  }
+}
+
+@mixin gridMediaMaxWidth($screen_size) {
+  @if (map.has-key(g.$breakpoints, $screen_size)) {
+    @include _gridMediaMaxWidth(map.get(map.get(g.$breakpoints, $screen_size), max)) {
+      @content;
+    }
+  }
+}
+
+@mixin gridMediaMinWidth($screen_size) {
+  @if (map.has-key(g.$breakpoints, $screen_size)) {
+    @include _gridMediaMinWidth(map.get(map.get(g.$breakpoints, $screen_size), min)) {
+      @content;
+    }
+  }
+}
+
+@mixin gridMediaBetweenWidth($screen_size_max, $screen_size_min) {
+  @if (
+    map.has-key(g.$breakpoints, $screen_size_max) and map.has-key(g.$breakpoints, $screen_size_min)
+  ) {
+    @include _gridMediaBetweenWidth(
+      map.get(map.get(g.$breakpoints, $screen_size_max), max),
+      map.get(map.get(g.$breakpoints, $screen_size_min), min)
+    ) {
+      @content;
+    }
+  }
+}
+
+@mixin gridMediaSizes($screen_sizes, $media_query: default) {
+  @each $screen in $screen_sizes {
+    @if (map.has-key(g.$breakpoints, $screen)) {
+      @if (
+        map.has-key(map.get(g.$breakpoints, $screen), max) and
+          map.has-key(map.get(g.$breakpoints, $screen), min) and
+          $media_query ==
+          default
+      ) {
+        @include _gridMediaBetweenWidth(
+          map.get(map.get(g.$breakpoints, $screen), max),
+          map.get(map.get(g.$breakpoints, $screen), min)
+        ) {
+          @content;
+        }
+      } @else if
+        (
+          map.has-key(map.get(g.$breakpoints, $screen), max) and
+            ($media_query == default or $media_query == max)
+        )
+      {
+        @include _gridMediaMaxWidth(map.get(map.get(g.$breakpoints, $screen), max)) {
+          @content;
+        }
+      } @else if
+        (
+          map.has-key(map.get(g.$breakpoints, $screen), min) and
+            ($media_query == default or $media_query == min)
+        )
+      {
+        @include _gridMediaMinWidth(map.get(map.get(g.$breakpoints, $screen), min)) {
+          @content;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+@use 'sass:math';
+
+@function pxToRem($pixels, $context: 16px) {
+  @if (math.is-unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+
+  @return math.div($pixels, $context) * 1rem;
+}

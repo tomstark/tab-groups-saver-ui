@@ -1,0 +1,14 @@
+@use '../functions' as fn;
+@use 'sass:math';
+
+// layout
+$sidebarWidth: fn.pxToRem(300px);
+
+$fullGutter: fn.pxToRem(32px);
+$halfGutter: math.div($fullGutter, 2);
+
+// font
+$fontBody: fn.pxToRem(16px);
+// $fontHeaderPrimary: fn.pxToRem(32px);
+
+$borderRadiusPrimary: fn.pxToRem(12px);
