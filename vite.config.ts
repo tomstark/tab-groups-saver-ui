@@ -7,6 +7,8 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import hotReloadExtension from 'hot-reload-extension-vite';
 import { fileURLToPath, URL } from 'node:url';
 import fs from 'fs';
+import Components from 'unplugin-vue-components/vite';
+import { PrimeVueResolver } from '@primevue/auto-import-resolver';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -25,6 +27,9 @@ export default defineConfig({
           dest: '.',
         },
       ],
+    }),
+    Components({
+      resolvers: [PrimeVueResolver()],
     }),
   ],
   resolve: {
