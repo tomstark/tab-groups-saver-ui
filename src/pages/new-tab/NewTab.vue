@@ -61,6 +61,8 @@ onMounted(async () => {
 }
 
 main {
+  display: flex;
+  flex-direction: column;
   background: colors.$lightPrimary;
   flex-grow: 1;
   padding: sizes.$halfGutter;

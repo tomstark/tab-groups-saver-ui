@@ -16,7 +16,10 @@ declare module 'vue' {
     NewSpaceButton: typeof import('./src/components/NewSpaceButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ScrollPanel: typeof import('primevue/scrollpanel')['default']
     SideBar: typeof import('./src/components/SideBar.vue')['default']
     SpacesList: typeof import('./src/components/SpacesList.vue')['default']
+    Window: typeof import('./src/components/Window.vue')['default']
+    WindowItem: typeof import('./src/components/WindowItem.vue')['default']
   }
 }
