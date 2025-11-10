@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import DashboardView from '@/pages/new-tab/DashboardView.vue';
-import SpaceView from '@/pages/new-tab/SpaceView.vue';
+import SpaceWindows from '@/pages/new-tab/SpaceWindows.vue';
 
 const routes = [
   {
@@ -11,7 +11,7 @@ const routes = [
   {
     path: '/space/:slug',
     name: 'space',
-    component: SpaceView,
+    component: SpaceWindows,
   },
 ];
 

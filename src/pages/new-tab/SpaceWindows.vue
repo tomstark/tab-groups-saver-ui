@@ -76,6 +76,7 @@ onUpdated(() => {
 
     &-inner {
       display: flex;
+      height: 100%;
     }
   }
 }

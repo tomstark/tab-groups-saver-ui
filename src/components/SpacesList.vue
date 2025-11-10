@@ -1,14 +1,24 @@
 <script setup lang="ts">
-import { nextTick, onUpdated, ref, useTemplateRef } from 'vue';
-import type { SpaceArray } from '@/types.ts';
+import { nextTick, onUpdated, reactive, ref, useTemplateRef } from 'vue';
+import type { Space } from '@/types.ts';
 import { useRoute } from 'vue-router';
+import { Sortable } from 'sortablejs-vue3';
+import type { SortableEvent, SortableOptions } from 'sortablejs';
+import { assertSpace } from '@/assertions.ts';
 
 const route = useRoute();
 interface Props {
-  spaces: SpaceArray;
+  spaces: Space[];
 }
 
-defineProps<Props>();
+const { spaces } = defineProps<Props>();
+
+const sortableJsOptions: SortableOptions = reactive({
+  animation: 200,
+  group: 'spaces',
+  ghostClass: 'spaces-list__item--ghost',
+  draggable: '.spaces-list__item--draggable',
+});
 
 const spaceNameInput = useTemplateRef('spaceNameInput');
 const suppressBlurEvent = ref(false);
@@ -26,42 +36,69 @@ const onSpaceNameInputBlur = ($event: FocusEvent) => {
   emit('newSpaceNamed', $event);
 };
 
+const validateSpace = (value: unknown): Space => {
+  assertSpace(value);
+  return value;
+};
+
+const onSortableUpdate = ($event: SortableEvent) => {
+  const space = validateSpace(spaces[$event.oldIndex as number]);
+
+  emit('itemRepositioned', {
+    slug: space.slug,
+    newPosition: ($event.newIndex as number) + 1,
+  });
+};
+
 onUpdated(async () => {
   await nextTick();
-  spaceNameInput.value?.[0]?.focus();
+  spaceNameInput.value?.focus();
 });
 
-const emit = defineEmits(['newSpaceNamed', 'makerDiscarded']);
+const emit = defineEmits(['newSpaceNamed', 'makerDiscarded', 'itemRepositioned']);
 </script>
 
 <template>
   <ul class="spaces-list">
     <li class="spaces-list__item spaces-list__item--title">Spaces</li>
-    <li
-      :class="[
-        'spaces-list__item',
-        { 'spaces-list__item--active': 'slug' in space && route.params.slug === space.slug },
-      ]"
-      v-for="space in spaces"
-      :key="space.id"
-    >
-      <RouterLink
-        class="spaces-list__link"
-        :to="{ name: 'space', params: { slug: 'slug' in space ? space.slug : '#' } }"
+    <li>
+      <Sortable
+        tag="ul"
+        :list="spaces"
+        item-key="id"
+        :options="sortableJsOptions"
+        @update="onSortableUpdate"
       >
-        <input
-          v-if="'editable' in space && space.editable"
-          class="spaces-list__input"
-          ref="spaceNameInput"
-          v-model="space.name"
-          type="text"
-          name="new-space-field"
-          @keyup.enter="($event.currentTarget as HTMLInputElement).blur()"
-          @keyup.esc="onSpaceNameInputKeyupEsc"
-          @blur="onSpaceNameInputBlur"
-        />
-        <template v-else>{{ space.name }}</template>
-      </RouterLink>
+        <template #item="{ element: space }">
+          <li
+            :class="[
+              'spaces-list__item',
+              {
+                'spaces-list__item--active': route.params.slug === space.slug,
+                'spaces-list__item--draggable': !!space.draggable,
+              },
+            ]"
+          >
+            <RouterLink
+              class="spaces-list__link"
+              :to="{ name: 'space', params: { slug: space.slug } }"
+            >
+              <input
+                v-if="space.composing"
+                class="spaces-list__input"
+                ref="spaceNameInput"
+                v-model="space.name"
+                type="text"
+                name="new-space-field"
+                @keyup.enter="($event.currentTarget as HTMLInputElement).blur()"
+                @keyup.esc="onSpaceNameInputKeyupEsc"
+                @blur="onSpaceNameInputBlur"
+              />
+              <template v-else>{{ space.name }}</template>
+            </RouterLink>
+          </li>
+        </template>
+      </Sortable>
     </li>
   </ul>
 </template>
@@ -86,6 +123,11 @@ const emit = defineEmits(['newSpaceNamed', 'makerDiscarded']);
     &--title {
       text-transform: uppercase;
       color: colors.$textLightSecondary;
+    }
+
+    &--ghost a {
+      opacity: 0.5;
+      box-shadow: inset 0 0 0 2px colors.$brandPink;
     }
   }
 

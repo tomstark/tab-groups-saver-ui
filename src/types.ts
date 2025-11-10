@@ -24,13 +24,6 @@ export interface Space {
   name: string;
   slug: string;
   position: number;
-  // ToDo - more
+  composing: boolean;
+  draggable: boolean;
 }
-
-export interface SpaceMaker {
-  id: string;
-  name: string;
-  editable: boolean;
-}
-
-export type SpaceArray = Space[] | [...Space[], SpaceMaker];

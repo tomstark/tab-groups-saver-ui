@@ -5,17 +5,22 @@ import SpacesList from '@/components/SpacesList.vue';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '@/stores/auth.ts';
 import { useSpacesStore } from '@/stores/spaces.ts';
-import type { Nullable, SpaceArray, SpaceMaker } from '@/types.ts';
+import type { Nullable, Space } from '@/types.ts';
 import router from '@/router';
 import CircularLoader from '@/assets/images/circular-loader.svg';
 import NewSpaceButton from '@/components/NewSpaceButton.vue';
 
 const { user } = storeToRefs(useAuthStore());
-const { spaces, newSpaceName, isLoading: spacesLoading } = storeToRefs(useSpacesStore());
-const { loadUserSpaces, createNewSpace } = useSpacesStore();
+const {
+  spaces,
+  userSpaces,
+  newSpaceName,
+  isLoading: spacesLoading,
+} = storeToRefs(useSpacesStore());
+const { loadUserSpaces, createNewSpace, updateSpacePosition, withLoading } = useSpacesStore();
 
-const maker: Ref<Nullable<SpaceMaker>> = ref(null);
-const resolvedSpaces: ComputedRef<SpaceArray> = computed(() => {
+const maker: Ref<Nullable<Space>> = ref(null);
+const resolvedSpaces: ComputedRef<Space[]> = computed(() => {
   if (maker.value !== null) {
     return [...spaces.value, maker.value];
   }
@@ -27,7 +32,14 @@ const createMaker = () => {
     // ToDo
     return;
   }
-  maker.value = { id: 'space-maker', name: newSpaceName.value, editable: true };
+  maker.value = {
+    id: 'space-maker',
+    slug: '#',
+    name: newSpaceName.value,
+    composing: true,
+    draggable: false,
+    position: 0,
+  };
 };
 
 const destroyMaker = () => (maker.value = null);
@@ -54,14 +66,25 @@ const onNewSpaceNamed = async (event: KeyboardEvent) => {
   }
 };
 
+const onItemRepositioned = async ({ slug, newPosition }: { slug: string; newPosition: number }) => {
+  const nonUserSpacesCount = resolvedSpaces.value.length - userSpaces.value.length;
+  const userSpacePosition = newPosition - nonUserSpacesCount;
+
+  try {
+    await withLoading(async () => {
+      await updateSpacePosition(slug, userSpacePosition);
+      await loadUserSpaces();
+    });
+  } catch (error: unknown) {
+    // ToDo
+    console.log(error);
+  }
+};
+
 onMounted(async () => {
   if (user.value) {
     await loadUserSpaces();
   }
-
-  // ToDo - work on repositioning Spaces feature and remove below
-  // await new Promise((r) => setTimeout(r, 2000));
-  // await updateSpacePosition('holiday-research', 2);
 });
 </script>
 
@@ -77,6 +100,7 @@ onMounted(async () => {
       :spaces="resolvedSpaces"
       @new-space-named="onNewSpaceNamed"
       @maker-discarded="onMakerDiscarded"
+      @item-repositioned="onItemRepositioned"
     />
 
     <div v-if="!!user" class="sidebar__box">

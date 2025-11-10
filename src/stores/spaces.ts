@@ -11,9 +11,16 @@ interface SpacesState {
   userSpaces: Space[];
 }
 
-const defaultSpaces = [
-  { id: 'a', name: 'Open', slug: 'open', position: 1, system_default: true },
-  { id: 'b', name: 'Staging', slug: 'staging', position: 2, system_default: true },
+const defaultSpaces: Space[] = [
+  { id: 'x', name: 'Open', slug: 'open', position: 1, composing: false, draggable: false },
+  {
+    id: 'xx',
+    name: 'Staging',
+    slug: 'staging',
+    position: 2,
+    composing: false,
+    draggable: false,
+  },
 ];
 
 export const useSpacesStore = defineStore('spacesStore', {
@@ -23,7 +30,10 @@ export const useSpacesStore = defineStore('spacesStore', {
     userSpaces: [],
   }),
   getters: {
-    spaces: (state: SpacesState) => [...defaultSpaces, ...state.userSpaces],
+    spaces: (state: SpacesState): Space[] => [
+      ...defaultSpaces,
+      ...state.userSpaces.map((item): Space => ({ ...item, composing: false, draggable: true })),
+    ],
     isLoading: (state) => state.loadingCount > 0,
   },
   actions: {
@@ -47,10 +57,9 @@ export const useSpacesStore = defineStore('spacesStore', {
         return newSpace;
       });
     },
-    async updateSpacePosition(slug: string, newPosition: number) {
-      await this.withLoading(async () => {
-        await spacesService.updateSpacePosition(slug, newPosition);
-        return await this.loadUserSpaces();
+    async updateSpacePosition(slug: string, newPosition: number): Promise<Space> {
+      return await this.withLoading(async (): Promise<Space> => {
+        return await spacesService.updateSpacePosition(slug, newPosition);
       });
     },
   },
