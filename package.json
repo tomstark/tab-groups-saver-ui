@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@primeuix/themes": "^1.2.5",
+    "camelcase-keys": "^10.0.1",
     "pinia": "^3.0.3",
     "primevue": "^4.4.1",
     "sortablejs": "^1.15.6",

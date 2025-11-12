@@ -1,15 +1,11 @@
 import { defineStore } from 'pinia';
 import type { Space } from '@/types.ts';
 import { SpacesService } from '@/services/spaces/SpacesService.ts';
+import { computed, type ComputedRef, type Ref, ref } from 'vue';
+import { useLoading } from '@/composables/useLoading.ts';
 
 // ToDo - introduce use of a service container later
 const spacesService = new SpacesService();
-
-interface SpacesState {
-  loadingCount: number;
-  newSpaceName: string;
-  userSpaces: Space[];
-}
 
 const defaultSpaces: Space[] = [
   { id: 'x', name: 'Open', slug: 'open', position: 1, composing: false, draggable: false },
@@ -23,44 +19,53 @@ const defaultSpaces: Space[] = [
   },
 ];
 
-export const useSpacesStore = defineStore('spacesStore', {
-  state: (): SpacesState => ({
-    loadingCount: 0,
-    newSpaceName: 'New Space',
-    userSpaces: [],
-  }),
-  getters: {
-    spaces: (state: SpacesState): Space[] => [
+export const useSpacesStore = defineStore('spacesStore', () => {
+  const { isLoading, startLoading, stopLoading } = useLoading();
+  const newSpaceName = ref('New Space');
+  const userSpaces: Ref<Space[]> = ref([]);
+
+  const spaces: ComputedRef<Space[]> = computed(() => {
+    return [
       ...defaultSpaces,
-      ...state.userSpaces.map((item): Space => ({ ...item, composing: false, draggable: true })),
-    ],
-    isLoading: (state) => state.loadingCount > 0,
-  },
-  actions: {
-    async withLoading<T>(fn: () => Promise<T>): Promise<T> {
-      try {
-        this.loadingCount++;
-        return await fn();
-      } finally {
-        this.loadingCount--;
-      }
-    },
-    async loadUserSpaces() {
-      await this.withLoading(async () => {
-        this.userSpaces = await spacesService.getSpaces();
-      });
-    },
-    async createNewSpace(name: string): Promise<Space> {
-      return await this.withLoading(async (): Promise<Space> => {
-        const newSpace = await spacesService.createNewSpace(name);
-        this.userSpaces.push(newSpace);
-        return newSpace;
-      });
-    },
-    async updateSpacePosition(slug: string, newPosition: number): Promise<Space> {
-      return await this.withLoading(async (): Promise<Space> => {
-        return await spacesService.updateSpacePosition(slug, newPosition);
-      });
-    },
-  },
+      ...userSpaces.value.map((item): Space => ({ ...item, composing: false, draggable: true })),
+    ];
+  });
+
+  const loadUserSpaces = async () => {
+    startLoading();
+    userSpaces.value = await spacesService.getSpaces();
+    stopLoading();
+  };
+
+  const createNewSpace = async (name: string): Promise<Space> => {
+    startLoading();
+    const newSpace = await spacesService.createNewSpace(name);
+    userSpaces.value.push(newSpace);
+    stopLoading();
+    return newSpace;
+  };
+
+  const updateSpacePosition = async (slug: string, newPosition: number): Promise<Space> => {
+    startLoading();
+    const updatedSpace = await spacesService.updateSpacePosition(slug, newPosition);
+    stopLoading();
+    return updatedSpace;
+  };
+
+  return {
+    // state
+    isLoading,
+    newSpaceName,
+    userSpaces,
+
+    // getters
+    spaces,
+
+    // actions
+    startLoading,
+    stopLoading,
+    loadUserSpaces,
+    createNewSpace,
+    updateSpacePosition,
+  };
 });

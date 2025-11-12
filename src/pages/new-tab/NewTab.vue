@@ -5,7 +5,7 @@ import { onMounted } from 'vue';
 import SideBar from '@/components/SideBar.vue';
 import CircularLoader from '@/assets/images/circular-loader.svg';
 
-const { loading, errors } = storeToRefs(useAuthStore());
+const { isLoading: authLoading, errors } = storeToRefs(useAuthStore());
 const { syncAuthUser } = useAuthStore();
 
 onMounted(async () => {
@@ -15,7 +15,7 @@ onMounted(async () => {
 
 <template>
   <transition name="fade">
-    <div v-if="loading" key="loader" class="loader">
+    <div v-if="authLoading" key="loader" class="loader">
       <CircularLoader width="150" height="150" />
     </div>
     <div v-else key="content" class="global-content">

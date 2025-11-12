@@ -3,71 +3,78 @@ import type { UserCredentials } from '@/services/auth/types.ts';
 import { type ApiErrorPayload, type Nullable, type User } from '@/types.ts';
 import { AuthService } from '@/services/auth/AuthService.ts';
 import { ApiError } from '@/errors/ApiError.ts';
+import { type Ref, ref } from 'vue';
+import { useLoading } from '@/composables/useLoading.ts';
 
 // ToDo - introduce use of a service container later
 const authService = new AuthService();
 
-interface StoreState {
-  loading: boolean;
-  user: Nullable<User>;
-  token: Nullable<string>;
-  errors: { [key: string]: ApiErrorPayload };
-}
+export const useAuthStore = defineStore('authStore', () => {
+  const { isLoading, startLoading, stopLoading } = useLoading();
+  const user: Ref<Nullable<User>> = ref(null);
+  const errors: Ref<{ [key: string]: ApiErrorPayload }> = ref({});
 
-export const useAuthStore = defineStore('authStore', {
-  state: (): StoreState => {
-    return {
-      loading: true,
-      user: null,
-      token: null,
-      errors: {},
-    };
-  },
-  actions: {
-    async login(credentials: UserCredentials) {
-      this.loading = true;
-      const error: Nullable<ApiError> = await authService.login(credentials);
-
-      if (error !== null) {
-        this.errors.login = error.payload;
-        this.loading = false;
-        return;
+  const getAuthUser = async () => {
+    startLoading();
+    try {
+      user.value = await authService.getUser();
+    } catch (e) {
+      if (e instanceof ApiError) {
+        errors.value.loginUser = e.payload;
       }
 
-      await this.syncToken();
-      await this.getAuthUser();
-      this.loading = false;
-    },
-    async getAuthUser() {
-      this.loading = true;
-      try {
-        this.user = await authService.getUser();
-      } catch (e) {
-        if (e instanceof ApiError) {
-          this.errors.loginUser = e.payload;
-        }
+      throw e;
+    } finally {
+      stopLoading();
+    }
+  };
 
-        throw e;
-      } finally {
-        this.loading = false;
-      }
-    },
-    async logout() {
-      await authService.logout();
-      await this.syncToken();
-    },
-    async syncToken() {
-      this.token = await authService.getToken();
-    },
-    async syncAuthUser() {
-      this.loading = true;
-      this.token = await authService.getToken();
+  const token: Ref<Nullable<string>> = ref(null);
+  const syncToken = async () => {
+    token.value = await authService.getToken();
+  };
 
-      if (this.token !== null) {
-        await this.getAuthUser();
-      }
+  const login = async (credentials: UserCredentials) => {
+    startLoading();
+    const error: Nullable<ApiError> = await authService.login(credentials);
 
-      this.loading = false;
-    },
-  },
+    if (error !== null) {
+      errors.value.login = error.payload;
+      stopLoading();
+      return;
+    }
+
+    await syncToken();
+    await getAuthUser();
+    stopLoading();
+  };
+
+  const syncAuthUser = async () => {
+    startLoading();
+    token.value = await authService.getToken();
+
+    if (token.value !== null) {
+      await getAuthUser();
+    }
+
+    stopLoading();
+  };
+
+  const logout = async () => {
+    await authService.logout();
+    await syncToken();
+  };
+
+  return {
+    // state
+    isLoading,
+    user,
+    token,
+    errors,
+
+    // actions
+    login,
+    syncAuthUser,
+    logout,
+  };
 });

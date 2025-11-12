@@ -20,12 +20,10 @@ const initiateScroller = () => {
 };
 
 onMounted(() => {
-  console.log('onMounted');
   initiateScroller();
 });
 
 onUpdated(() => {
-  console.log('onUpdated');
   initiateScroller();
 });
 </script>

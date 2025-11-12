@@ -16,7 +16,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  updated_at: string;
+  updatedAt: string;
 }
 
 export interface Space {

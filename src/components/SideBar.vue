@@ -17,7 +17,13 @@ const {
   newSpaceName,
   isLoading: spacesLoading,
 } = storeToRefs(useSpacesStore());
-const { loadUserSpaces, createNewSpace, updateSpacePosition, withLoading } = useSpacesStore();
+const {
+  loadUserSpaces,
+  createNewSpace,
+  updateSpacePosition,
+  startLoading: startSpacesLoading,
+  stopLoading: stopSpacesLoading,
+} = useSpacesStore();
 
 const maker: Ref<Nullable<Space>> = ref(null);
 const resolvedSpaces: ComputedRef<Space[]> = computed(() => {
@@ -71,13 +77,14 @@ const onItemRepositioned = async ({ slug, newPosition }: { slug: string; newPosi
   const userSpacePosition = newPosition - nonUserSpacesCount;
 
   try {
-    await withLoading(async () => {
-      await updateSpacePosition(slug, userSpacePosition);
-      await loadUserSpaces();
-    });
+    startSpacesLoading();
+    await updateSpacePosition(slug, userSpacePosition);
+    await loadUserSpaces();
   } catch (error: unknown) {
     // ToDo
     console.log(error);
+  } finally {
+    stopSpacesLoading();
   }
 };
 

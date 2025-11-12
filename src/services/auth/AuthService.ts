@@ -3,6 +3,8 @@ import httpClient from '@/infrastructure/http-client/HttpClient.ts';
 import authTokenStorage from '@/infrastructure/auth/AuthTokenStorage.ts';
 import type { User } from '@/types.ts';
 import { ApiError } from '@/errors/ApiError.ts';
+import camelcaseKeys from 'camelcase-keys';
+import { camelCaseKeysConfig } from '@/config/camlecase-keys.ts';
 
 export class AuthService {
   async login(credentials: UserCredentials): Promise<ApiError | null> {
@@ -28,11 +30,14 @@ export class AuthService {
   }
 
   async getUser(): Promise<User> {
-    return await httpClient.get<User>('/user');
+    const user = await httpClient.get<User>('/user');
+
+    return camelcaseKeys(user, camelCaseKeysConfig);
   }
 
   async logout(): Promise<void> {
     await httpClient.post<{ message: string }>('/logout');
+
     await authTokenStorage.deleteToken();
   }
 
