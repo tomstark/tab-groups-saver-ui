@@ -12,3 +12,5 @@ $fontBody: fn.pxToRem(16px);
 // $fontHeaderPrimary: fn.pxToRem(32px);
 
 $borderRadiusPrimary: fn.pxToRem(12px);
+
+// ToDo - use fn.pxToRem() throughout this entire codebase? Else remove its use here

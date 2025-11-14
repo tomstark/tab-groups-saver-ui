@@ -43,8 +43,8 @@ export function useHorizontalMouseOverScroll() {
     const rect = container.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const width = rect.width;
-    const leftZone = width * 0.35;
-    const rightZone = width * 0.35;
+    const leftZone = width * 0.15;
+    const rightZone = width * 0.85;
 
     if (x < leftZone) {
       const intensity = 1 - x / leftZone;

@@ -124,21 +124,21 @@ onMounted(async () => {
 
 .sidebar {
   background: colors.$lightQuaternary;
-  padding: sizes.$fullGutter;
   display: flex;
   flex-direction: column;
-  width: 100%; // ToDo - mobile when ready (mixed with JS)
+  padding: sizes.$fullGutter;
   position: relative;
+  width: 100%; // ToDo - mobile when ready (mixed with JS)
 
-  @include grid.gridMediaMinWidth((sm)) {
+  @include grid.gridMediaMinWidth((md)) {
     min-height: 100%;
     width: sizes.$sidebarWidth;
   }
 
   &__box {
+    border-top: 1px solid colors.$lightTertiary;
     margin-top: auto;
     padding-top: sizes.$fullGutter;
-    border-top: 1px solid colors.$lightTertiary;
   }
 }
 

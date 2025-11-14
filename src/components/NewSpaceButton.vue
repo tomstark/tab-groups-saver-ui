@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import PlusIcon from '@/assets/images/plus-icon.svg';
+import CirclePlusIcon from '@/assets/images/icons/circle-plus.svg';
 </script>
 
 <template>
   <button class="new-space-button">
     <span class="new-space-button__inner">
-      <PlusIcon class="new-space-button__icon" width="20" height="20" />
+      <CirclePlusIcon class="new-space-button__icon" width="20" height="20" />
       New Space
     </span>
   </button>
@@ -18,13 +18,13 @@ import PlusIcon from '@/assets/images/plus-icon.svg';
 
 .new-space-button {
   background: colors.$brandBlack;
-  text-align: center;
-  font-weight: bold;
-  padding: fn.pxToRem(9px) fn.pxToRem(6px);
-  border: none;
   border-radius: sizes.$borderRadiusPrimary;
+  border: none;
   color: colors.$whitePrimary;
   cursor: pointer;
+  font-weight: bold;
+  padding: 9px 6px;
+  text-align: center;
   width: 100%;
 
   &:hover &__inner {
@@ -32,17 +32,17 @@ import PlusIcon from '@/assets/images/plus-icon.svg';
   }
 
   &__inner {
+    align-items: flex-start;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    transition: opacity 0.2s ease-in-out;
     opacity: 0.6;
+    transition: opacity 0.2s ease-in-out;
   }
 
   &__icon {
-    margin-right: fn.pxToRem(5px);
-    top: 1px;
+    margin-right: 5px;
     position: relative;
+    top: 1px;
   }
 }
 </style>

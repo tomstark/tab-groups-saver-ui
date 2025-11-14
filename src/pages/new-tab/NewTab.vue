@@ -61,14 +61,14 @@ onMounted(async () => {
 }
 
 main {
+  background: colors.$lightPrimary;
   display: flex;
   flex-direction: column;
-  background: colors.$lightPrimary;
   flex-grow: 1;
   padding: sizes.$halfGutter;
   width: 100%;
 
-  @include grid.gridMediaMinWidth((sm)) {
+  @include grid.gridMediaMinWidth((md)) {
     width: calc(100% - #{sizes.$sidebarWidth});
   }
 }

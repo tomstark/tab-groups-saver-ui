@@ -4,7 +4,7 @@ import authTokenStorage from '@/infrastructure/auth/AuthTokenStorage.ts';
 import type { User } from '@/types.ts';
 import { ApiError } from '@/errors/ApiError.ts';
 import camelcaseKeys from 'camelcase-keys';
-import { camelCaseKeysConfig } from '@/config/camlecase-keys.ts';
+import { camelCaseKeysConfig } from '@/utilities/configs/camlecase-keys.ts';
 
 export class AuthService {
   async login(credentials: UserCredentials): Promise<ApiError | null> {

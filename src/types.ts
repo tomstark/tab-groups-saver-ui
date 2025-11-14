@@ -1,3 +1,5 @@
+import { TabGroupColor } from '@/utilities/enums.ts';
+
 export type Nullable<T> = T | null;
 
 export interface ApiErrorPayload {
@@ -26,4 +28,32 @@ export interface Space {
   position: number;
   composing: boolean;
   draggable: boolean;
+}
+
+export interface WindowI {
+  // added I suffix to avoid clashes with the global browser window object's type (Window)
+  id: string;
+  name: string;
+  position: number;
+  updatedAt: string;
+  tabGroups: TabGroup[];
+}
+
+export interface TabGroup {
+  id: string;
+  name: string;
+  color: keyof typeof TabGroupColor;
+  position: number;
+  updatedAt: string;
+  tabs: Tab[];
+}
+
+export interface Tab {
+  id: string;
+  title: string;
+  url: string;
+  icon: Nullable<string>;
+  color: Nullable<TabGroupColor>;
+  position: number;
+  updatedAt: string;
 }

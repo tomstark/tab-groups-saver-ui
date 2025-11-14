@@ -11,3 +11,9 @@
   align-items: center;
   justify-content: center;
 }
+
+%single-line-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -16,11 +16,12 @@ export const useAuthStore = defineStore('authStore', () => {
 
   const getAuthUser = async () => {
     startLoading();
+
     try {
       user.value = await authService.getUser();
     } catch (e) {
       if (e instanceof ApiError) {
-        errors.value.loginUser = e.payload;
+        errors.value.getAuthUser = e.payload;
       }
 
       throw e;
@@ -51,13 +52,22 @@ export const useAuthStore = defineStore('authStore', () => {
 
   const syncAuthUser = async () => {
     startLoading();
-    token.value = await authService.getToken();
 
-    if (token.value !== null) {
-      await getAuthUser();
+    try {
+      token.value = await authService.getToken();
+
+      if (token.value !== null) {
+        await getAuthUser();
+      }
+    } catch (e) {
+      if (e instanceof ApiError) {
+        errors.value.syncAuthUser = e.payload;
+      }
+
+      throw e;
+    } finally {
+      stopLoading();
     }
-
-    stopLoading();
   };
 
   const logout = async () => {

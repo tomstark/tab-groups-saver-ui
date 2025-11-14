@@ -7,8 +7,8 @@ export function useLoading() {
     loadingCount.value++;
   };
 
-  // Due to the count-based nature of this loading code, 'stopLoading' may not literally put a stop to 'isLoading'
-  // Think of 'stop' here meaning: "stopping the contribution of the function that calls stopLoading()"
+  // Due to the count-based nature of this loading code, 'stopLoading' may not literally put a stop
+  // to 'isLoading'. Think of 'stop' as: "stop the contribution of the fn calling stopLoading()"
   const stopLoading = () => {
     if (loadingCount.value > 0) {
       loadingCount.value--;

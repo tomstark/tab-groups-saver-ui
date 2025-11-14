@@ -11,15 +11,21 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Button: typeof import('primevue/button')['default']
+    ConfirmPopup: typeof import('primevue/confirmpopup')['default']
     Dialog: typeof import('primevue/dialog')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    ModalDialog: typeof import('./src/components/ModalDialog.vue')['default']
     NewSpaceButton: typeof import('./src/components/NewSpaceButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScrollPanel: typeof import('primevue/scrollpanel')['default']
     SideBar: typeof import('./src/components/SideBar.vue')['default']
     SpacesList: typeof import('./src/components/SpacesList.vue')['default']
-    Window: typeof import('./src/components/Window.vue')['default']
+    TabForm: typeof import('./src/components/TabForm.vue')['default']
+    TabGroup: typeof import('./src/components/TabGroup.vue')['default']
+    TabGroups: typeof import('./src/components/TabGroups.vue')['default']
+    TabItem: typeof import('./src/components/TabItem.vue')['default']
     WindowItem: typeof import('./src/components/WindowItem.vue')['default']
   }
 }

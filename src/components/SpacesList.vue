@@ -121,39 +121,39 @@ const emit = defineEmits(['newSpaceNamed', 'makerDiscarded', 'itemRepositioned']
     }
 
     &--title {
-      text-transform: uppercase;
       color: colors.$textLightSecondary;
+      text-transform: uppercase;
     }
 
     &--ghost a {
-      opacity: 0.5;
       box-shadow: inset 0 0 0 2px colors.$brandPink;
+      opacity: 0.5;
     }
   }
 
   &__link {
-    display: block;
-    padding: fn.pxToRem(14px) sizes.$halfGutter;
-    text-decoration: none;
-    color: colors.$textDarkPrimary;
     background: colors.$whitePrimary;
-    box-shadow: 0 0 fn.pxToRem(18px) 0 rgba(colors.$blackPrimary, 0.06);
     border-radius: sizes.$borderRadiusPrimary;
+    box-shadow: 0 0 18px 0 rgba(colors.$blackPrimary, 0.06);
+    color: colors.$textDarkPrimary;
+    display: block;
+    padding: 14px sizes.$halfGutter;
+    text-decoration: none;
     transition: background-color 0.2s ease-in-out;
 
     @at-root #{$block}__item--active & {
       background: rgba(colors.$brandPink, 0.6);
-      box-shadow: inset 0 0 fn.pxToRem(20px) fn.pxToRem(9px) rgba(colors.$brandPink, 0.19);
+      box-shadow: inset 0 0 20px 9px rgba(colors.$brandPink, 0.19);
       color: colors.$whitePrimary;
       font-weight: bold;
     }
   }
 
   &__input {
-    width: 100%;
-    border: 1px solid colors.$lightPrimary;
     background: colors.$lightQuaternary;
-    border-radius: fn.pxToRem(6px);
+    border-radius: 6px;
+    border: 1px solid colors.$lightPrimary;
+    width: 100%;
 
     &:focus-visible {
       outline: 1px dashed colors.$brandBlue;

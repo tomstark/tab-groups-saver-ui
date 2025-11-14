@@ -1,7 +1,7 @@
 import httpClient from '@/infrastructure/http-client/HttpClient.ts';
 import type { ApiResponse, Space } from '@/types.ts';
 import camelcaseKeys from 'camelcase-keys';
-import { camelCaseKeysConfig } from '@/config/camlecase-keys.ts';
+import { camelCaseKeysConfig } from '@/utilities/configs/camlecase-keys.ts';
 
 export class SpacesService {
   async getSpaces(): Promise<Space[]> {
